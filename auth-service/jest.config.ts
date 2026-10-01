@@ -25,6 +25,10 @@ const config: Config = {
   ],
   coverageDirectory: './coverage',
   testEnvironment: 'node',
+  coveragePathIgnorePatterns: ['/node_modules/', 'main\\.ts$', '\\.module\\.ts$'],
+  coverageThreshold: {
+    global: { lines: 50, statements: 50 },
+  },
 };
 
 export default config;
