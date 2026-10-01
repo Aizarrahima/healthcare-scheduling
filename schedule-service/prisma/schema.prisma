@@ -1,15 +1,47 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String
+  email     String     @unique
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  schedules Schedule[]
+
+  @@map("customers")
+}
+
+model Doctor {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  schedules Schedule[]
+
+  @@map("doctors")
+}
+
+model Schedule {
+  id          String   @id @default(uuid()) @db.Uuid
+  objective   String
+  customerId  String   @map("customer_id") @db.Uuid
+  doctorId    String   @map("doctor_id") @db.Uuid
+  scheduledAt DateTime @map("scheduled_at") @db.Timestamptz(3)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  doctor   Doctor   @relation(fields: [doctorId], references: [id], onDelete: Restrict)
+
+  @@unique([doctorId, scheduledAt])
+  @@index([customerId])
+  @@index([scheduledAt])
+  @@map("schedules")
 }
