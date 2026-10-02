@@ -1,27 +1,27 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-@InputType()
+@InputType({ description: 'Payload to create a new account' })
 export class RegisterInput {
-    @Field({ description: 'Unique email address' })
+    @Field({ description: 'Unique email address (case-insensitive)' })
     @IsEmail()
     @MaxLength(255)
     email!: string;
 
-    @Field({ description: 'Minimum 8 characters (bcrypt only uses the first 72 bytes)' })
+    @Field({ description: 'Password, 8–72 characters (bcrypt only uses the first 72 bytes)' })
     @IsString()
     @MinLength(8)
     @MaxLength(72)
     password!: string;
 }
 
-@InputType()
+@InputType({ description: 'Credentials to obtain an access token' })
 export class LoginInput {
-    @Field()
+    @Field({ description: 'Registered email address' })
     @IsEmail()
     email!: string;
 
-    @Field()
+    @Field({ description: 'Account password' })
     @IsString()
     @IsNotEmpty()
     password!: string;

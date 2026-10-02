@@ -3,12 +3,21 @@ import { Paginated } from '../common/pagination';
 
 @ObjectType({ description: 'Patient who books consultations' })
 export class Customer {
-    @Field(() => ID) id!: string;
-    @Field() name!: string;
-    @Field({ description: 'Unique; used for schedule notifications' }) email!: string;
-    @Field() createdAt!: Date;
-    @Field() updatedAt!: Date;
+    @Field(() => ID, { description: 'Customer UUID' })
+    id!: string;
+
+    @Field({ description: 'Full name' })
+    name!: string;
+
+    @Field({ description: 'Unique email address, used for schedule notifications' })
+    email!: string;
+
+    @Field({ description: 'Creation timestamp (ISO 8601, UTC)' })
+    createdAt!: Date;
+
+    @Field({ description: 'Last update timestamp (ISO 8601, UTC)' })
+    updatedAt!: Date;
 }
 
-@ObjectType()
+@ObjectType({ description: 'Paginated list of customers' })
 export class PaginatedCustomers extends Paginated(Customer) { }

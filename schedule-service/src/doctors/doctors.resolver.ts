@@ -10,14 +10,14 @@ export class DoctorsResolver {
     constructor(private readonly doctorsService: DoctorsService) { }
 
     @Mutation(() => Doctor, { description: 'Create a new doctor' })
-    createDoctor(@Args('input') input: CreateDoctorInput) {
+    createDoctor(@Args('input', { description: 'Doctor data' }) input: CreateDoctorInput) {
         return this.doctorsService.create(input);
     }
 
     @Mutation(() => Doctor, { description: 'Update doctor data' })
     updateDoctor(
-        @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
-        @Args('input') input: UpdateDoctorInput,
+        @Args('id', { type: () => ID, description: 'Doctor UUID' }, ParseUUIDPipe) id: string,
+        @Args('input', { description: 'Fields to update' }) input: UpdateDoctorInput,
     ) {
         return this.doctorsService.update(id, input);
     }
@@ -28,12 +28,12 @@ export class DoctorsResolver {
     }
 
     @Query(() => Doctor, { description: 'Get a doctor by ID' })
-    doctor(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    doctor(@Args('id', { type: () => ID, description: 'Doctor UUID' }, ParseUUIDPipe) id: string) {
         return this.doctorsService.findOne(id);
     }
 
     @Mutation(() => Doctor, { description: 'Delete a doctor (fails if they still have schedules)' })
-    deleteDoctor(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    deleteDoctor(@Args('id', { type: () => ID, description: 'Doctor UUID' }, ParseUUIDPipe) id: string) {
         return this.doctorsService.remove(id);
     }
 }

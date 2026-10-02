@@ -9,7 +9,7 @@ export class PaginationArgs {
     @Min(1)
     page: number = 1;
 
-    @Field(() => Int, { defaultValue: 10, description: 'Items per page (max 100)' })
+    @Field(() => Int, { defaultValue: 10, description: 'Items per page, between 1 and 100' })
     @IsInt()
     @Min(1)
     @Max(100)
@@ -18,11 +18,20 @@ export class PaginationArgs {
 
 @ObjectType({ description: 'Pagination metadata' })
 export class PageInfo {
-    @Field(() => Int) total!: number;
-    @Field(() => Int) page!: number;
-    @Field(() => Int) limit!: number;
-    @Field(() => Int) totalPages!: number;
-    @Field() hasNextPage!: boolean;
+    @Field(() => Int, { description: 'Total number of items matching the query' })
+    total!: number;
+
+    @Field(() => Int, { description: 'Current page (1-based)' })
+    page!: number;
+
+    @Field(() => Int, { description: 'Items per page' })
+    limit!: number;
+
+    @Field(() => Int, { description: 'Total number of pages' })
+    totalPages!: number;
+
+    @Field({ description: 'Whether a next page exists' })
+    hasNextPage!: boolean;
 }
 
 export interface PaginatedResult<T> {
@@ -33,8 +42,11 @@ export interface PaginatedResult<T> {
 export function Paginated<T>(classRef: Type<T>): Type<PaginatedResult<T>> {
     @ObjectType({ isAbstract: true })
     abstract class PaginatedType implements PaginatedResult<T> {
-        @Field(() => [classRef]) items!: T[];
-        @Field(() => PageInfo) pageInfo!: PageInfo;
+        @Field(() => [classRef], { description: 'Items on the current page' })
+        items!: T[];
+
+        @Field(() => PageInfo, { description: 'Pagination metadata' })
+        pageInfo!: PageInfo;
     }
     return PaginatedType as Type<PaginatedResult<T>>;
 }

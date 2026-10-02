@@ -10,14 +10,14 @@ export class CustomersResolver {
     constructor(private readonly customersService: CustomersService) { }
 
     @Mutation(() => Customer, { description: 'Create a new customer' })
-    createCustomer(@Args('input') input: CreateCustomerInput) {
+    createCustomer(@Args('input', { description: 'Customer data' }) input: CreateCustomerInput) {
         return this.customersService.create(input);
     }
 
     @Mutation(() => Customer, { description: 'Update customer name and/or email' })
     updateCustomer(
-        @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
-        @Args('input') input: UpdateCustomerInput,
+        @Args('id', { type: () => ID, description: 'Customer UUID' }, ParseUUIDPipe) id: string,
+        @Args('input', { description: 'Fields to update' }) input: UpdateCustomerInput,
     ) {
         return this.customersService.update(id, input);
     }
@@ -28,12 +28,12 @@ export class CustomersResolver {
     }
 
     @Query(() => Customer, { description: 'Get a customer by ID' })
-    customer(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    customer(@Args('id', { type: () => ID, description: 'Customer UUID' }, ParseUUIDPipe) id: string) {
         return this.customersService.findOne(id);
     }
 
     @Mutation(() => Customer, { description: 'Delete a customer (fails if they still have schedules)' })
-    deleteCustomer(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    deleteCustomer(@Args('id', { type: () => ID, description: 'Customer UUID' }, ParseUUIDPipe) id: string) {
         return this.customersService.remove(id);
     }
 }

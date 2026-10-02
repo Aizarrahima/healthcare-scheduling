@@ -12,7 +12,7 @@ export class SchedulesResolver {
         description:
             'Book a consultation. Rejected if the doctor already has a schedule within the slot window.',
     })
-    createSchedule(@Args('input') input: CreateScheduleInput) {
+    createSchedule(@Args('input', { description: 'Consultation details' }) input: CreateScheduleInput) {
         return this.schedulesService.create(input);
     }
 
@@ -24,12 +24,12 @@ export class SchedulesResolver {
     }
 
     @Query(() => Schedule, { description: 'Get a schedule by ID' })
-    schedule(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    schedule(@Args('id', { type: () => ID, description: 'Schedule UUID' }, ParseUUIDPipe) id: string) {
         return this.schedulesService.findOne(id);
     }
 
     @Mutation(() => Schedule, { description: 'Delete a schedule and notify the customer' })
-    deleteSchedule(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    deleteSchedule(@Args('id', { type: () => ID, description: 'Schedule UUID' }, ParseUUIDPipe) id: string) {
         return this.schedulesService.remove(id);
     }
 }
